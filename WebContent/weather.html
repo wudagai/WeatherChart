@@ -1,0 +1,94 @@
+﻿<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>CSS APP天气应用</title>
+<link type="text/css" href="weather.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<!-- {"future":
+{"day_20190606":{"date":"20190606","weather_id":{"fa":"07","fb":"02"},"week":"星期四","temperature":"23℃~29℃","weather":"小雨转阴","wind":"南风微风"},
+"day_20190605":{"date":"20190605","weather_id":{"fa":"01","fb":"08"},"week":"星期三","temperature":"24℃~32℃","weather":"多云转中雨","wind":"东南风微风"},
+"day_20190608":{"date":"20190608","weather_id":{"fa":"01","fb":"08"},"week":"星期六","temperature":"24℃~32℃","weather":"多云转中雨","wind":"东南风微风"},
+"day_20190607":{"date":"20190607","weather_id":{"fa":"00","fb":"00"},"week":"星期五","temperature":"21℃~32℃","weather":"晴","wind":"东南风微风"},
+"day_20190602":{"date":"20190602","weather_id":{"fa":"01","fb":"00"},"week":"星期日","temperature":"19℃~30℃","weather":"多云转晴","wind":"东南风微风"},
+"day_20190604":{"date":"20190604","weather_id":{"fa":"00","fb":"01"},"week":"星期二","temperature":"23℃~34℃","weather":"晴转多云","wind":"东南风微风"},
+"day_20190603":{"date":"20190603","weather_id":{"fa":"00","fb":"00"},"week":"星期一","temperature":"21℃~32℃","weather":"晴","wind":"东南风微风"}
+},
+"today":{"weather_id":{"fa":"01","fb":"00"},"week":"星期日","city":"南京","dressing_index":"热","travel_index":"适宜","wash_index":"较适宜","comfort_index":"","exercise_index":"适宜","dressing_advice":"天气热，建议着短裙、短裤、短薄外套、T恤等夏季服装。","uv_index":"中等","drying_index":"","temperature":"19℃~30℃","weather":"多云转晴","date_y":"2019年06月02日","wind":"东南风微风"},
+"sk":{"temp":"30","humidity":"37%","wind_direction":"东南风","time":"14:15","wind_strength":"2级"}
+} -->
+<script>
+$(function(){
+	var i=0;
+	getWeather("南京");
+	getWeather("广州");
+	getWeather("东莞");
+	getWeather("齐齐哈尔");
+	var time=["time-morning","time-day","time-evening","time-night"];
+	 function getWeather(cityname){
+		$.ajax({
+			type:'post',
+			url:'Weather',
+			data:'city='+cityname,
+			success:function(weather){
+				//将json字符串转为json对象
+				var weatherjson=$.parseJSON(weather);
+				var result=
+			     	'<div class="weather '+ time[i++]+' active">'
+			        	+'<div class="icon">'
+			        	+ getWeatherIcon(weatherjson.today.weathe)
+			        	+'</div>'
+			        	+'<div class="content">'
+			          	+'<h3>'+weatherjson.today.city+'</h3>'
+			         	+'<div class="degrees">'+weatherjson.today.temperature+'</div>'
+			          	+'<div class="data">'          
+			            +'<h2>'+weatherjson.today.weather+'</h2>'
+			            +'<div>风向:'+ weatherjson.sk.wind_direction+'</div>'
+			            +'<div>湿度:'+ weatherjson.sk.humidity+'</div>'
+			          	+'</div>'
+			        	+'</div>'
+			      		+'</div>';
+			      		$("section").append(result);	      		
+			}
+			
+		})
+	};
+
+	//根据当前天气获取指定图标样式
+	function getWeatherIcon(weather)
+	{
+		if(weather.indexOf("晴") != -1)
+		{
+			return '<i class="sun"></i>';
+		}
+		else if(weather.indexOf("多云") != -1)
+		{
+			return '<i class="sun"></i><i class="cloud windy"></i>';
+		}
+		else if(weather.indexOf("雨") != -1)
+		{
+			return '<i class="sun"></i><i class="cloud"></i><i class="sprinkles"></i><i class="sprinkles"></i><i class="sprinkles"></i><i class="sprinkles"></i>';
+		}
+		else if(weather.indexOf("雪") != -1)
+		{
+			return '<i class="moon"></i><i class="cloud"></i><div class="snowflakes"><i class="snowflake"></i><i class="snowflake"></i><i class="snowflake"></i><i class="snowflake"></i></div>';
+		}
+	}
+
+
+})
+
+</script>
+</head>
+<body>
+
+<main>  
+  <div class="device">
+    <header></header>
+    <section>
+   <!-- 天气展示区-->
+    </section>
+  </div>
+</main>
+</body>
+</html>
